@@ -1,19 +1,12 @@
 package org.loose.fis.registration.example;
 
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-
 import org.loose.fis.registration.example.controllers.RegistrationController;
 import org.loose.fis.registration.example.services.UserService;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RegistrationView extends JFrame {
 	private JButton btnRegister;
@@ -54,19 +47,19 @@ public class RegistrationView extends JFrame {
         contentPane.add(lblRole);
         
         String[] roles = { "Client", "Admin"};
-        cmbRole = new JComboBox<String>(roles);
+        cmbRole = new JComboBox<>(roles);
         cmbRole.setBounds(45, 70, 110, 25);
         contentPane.add(cmbRole);
 		
 		btnRegister = new JButton("Register");
 		btnRegister.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent arg0) {
-            	if (controller.checkAvailibility(txtUsername.getText(), new String(txtPassword.getPassword()), String.valueOf(cmbRole.getSelectedItem()))) {
-            		JOptionPane.showMessageDialog(null, "User successfully added", "Adding user", JOptionPane.INFORMATION_MESSAGE);
-				} else {
-					JOptionPane.showMessageDialog(null, "User alreay added", "Adding user", JOptionPane.ERROR_MESSAGE);
-				}
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (controller.checkAvailability(txtUsername.getText(), new String(txtPassword.getPassword()), String.valueOf(cmbRole.getSelectedItem()))) {
+                    JOptionPane.showMessageDialog(null, "User successfully added", "Adding user", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "User alreay added", "Adding user", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 		btnRegister.setBounds(175, 110, 100, 40);
