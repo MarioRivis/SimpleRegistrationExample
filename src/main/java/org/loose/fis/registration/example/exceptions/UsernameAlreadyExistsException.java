@@ -1,10 +1,10 @@
 package org.loose.fis.registration.example.exceptions;
 
-public class UsernameAlreadyExists extends RuntimeException {
+public class UsernameAlreadyExistsException extends Exception {
 
     private String username;
 
-    public UsernameAlreadyExists(String username) {
+    public UsernameAlreadyExistsException(String username) {
         super(String.format("An account with the username %s already exists!", username));
         this.username = username;
     }

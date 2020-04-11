@@ -2,13 +2,15 @@ package org.loose.fis.registration.example.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.loose.fis.registration.example.exceptions.CouldNotWriteUsersException;
-import org.loose.fis.registration.example.exceptions.UsernameAlreadyExists;
-import org.loose.fis.registration.example.model.UserDTO;
+import org.loose.fis.registration.example.exceptions.UsernameAlreadyExistsException;
+import org.loose.fis.registration.example.model.User;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -16,32 +18,38 @@ import java.util.Objects;
 
 public class UserService {
 
-    private static List<UserDTO> users;
+    private static List<User> users;
+    public static final Path USERS_PATH = FileSystemService.getPathToFile("config", "users.json");
 
     public static void loadUsersFromFile() throws IOException {
+
+        if (!Files.exists(USERS_PATH)) {
+            FileUtils.copyURLToFile(UserService.class.getClassLoader().getResource("users.json"), USERS_PATH.toFile());
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
 
-        users = objectMapper.readValue(Paths.get("./config/users.json").toFile(), new TypeReference<List<UserDTO>>() {
+        users = objectMapper.readValue(USERS_PATH.toFile(), new TypeReference<List<User>>() {
         });
     }
 
-    public static void addUser(String username, String password, String role) {
+    public static void addUser(String username, String password, String role) throws UsernameAlreadyExistsException {
         checkUserDoesNotAlreadyExist(username);
-        users.add(new UserDTO(username, encodePassword(username, password), role));
+        users.add(new User(username, encodePassword(username, password), role));
         persistUsers();
     }
 
-    private static void checkUserDoesNotAlreadyExist(String username) {
-        for (UserDTO user : users) {
+    private static void checkUserDoesNotAlreadyExist(String username) throws UsernameAlreadyExistsException {
+        for (User user : users) {
             if (Objects.equals(username, user.getUsername()))
-                throw new UsernameAlreadyExists(username);
+                throw new UsernameAlreadyExistsException(username);
         }
     }
 
     private static void persistUsers() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(Paths.get("./config/users.json").toFile(), users);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(USERS_PATH.toFile(), users);
         } catch (IOException e) {
             throw new CouldNotWriteUsersException();
         }
