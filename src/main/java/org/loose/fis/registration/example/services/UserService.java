@@ -18,8 +18,8 @@ import java.util.Objects;
 
 public class UserService {
 
-    private static List<User> users;
-    private static final Path USERS_PATH = FileSystemService.getPathToFile("config", "users.json");
+    static List<User> users;
+    static Path USERS_PATH = FileSystemService.getPathToFile("config", "users.json");
 
     public static void loadUsersFromFile() throws IOException {
 
@@ -39,14 +39,14 @@ public class UserService {
         persistUsers();
     }
 
-    private static void checkUserDoesNotAlreadyExist(String username) throws UsernameAlreadyExistsException {
+    static void checkUserDoesNotAlreadyExist(String username) throws UsernameAlreadyExistsException {
         for (User user : users) {
             if (Objects.equals(username, user.getUsername()))
                 throw new UsernameAlreadyExistsException(username);
         }
     }
 
-    private static void persistUsers() {
+    static void persistUsers() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(USERS_PATH.toFile(), users);
@@ -55,7 +55,7 @@ public class UserService {
         }
     }
 
-    private static String encodePassword(String salt, String password) {
+    static String encodePassword(String salt, String password) {
         MessageDigest md = getMessageDigest();
         md.update(salt.getBytes(StandardCharsets.UTF_8));
 
@@ -66,7 +66,7 @@ public class UserService {
                 .replace("\"", ""); //to be able to save in JSON format
     }
 
-    private static MessageDigest getMessageDigest() {
+    static MessageDigest getMessageDigest() {
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA-512");
@@ -77,4 +77,7 @@ public class UserService {
     }
 
 
+    public static List<User> getUsers() {
+        return users;
+    }
 }

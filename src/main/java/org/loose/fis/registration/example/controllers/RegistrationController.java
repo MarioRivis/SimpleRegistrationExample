@@ -11,13 +11,13 @@ import org.loose.fis.registration.example.services.UserService;
 public class RegistrationController {
 
     @FXML
-    private Text registrationMessage;
+    Text registrationMessage;
     @FXML
-    private PasswordField passwordField;
+    PasswordField passwordField;
     @FXML
-    private TextField usernameField;
+    TextField usernameField;
     @FXML
-    private ChoiceBox role;
+    ChoiceBox role;
 
     @FXML
     public void initialize() {
