@@ -17,8 +17,6 @@ import static org.junit.Assert.*;
 
 public class UserServiceTest {
 
-    public static final String TEST_1 = "test1";
-
     @BeforeClass
     public static void setupClass() {
         FileSystemService.APPLICATION_FOLDER = ".test-registration-example";
